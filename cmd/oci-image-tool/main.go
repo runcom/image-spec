@@ -21,6 +21,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	// TODO(runcom): if oci-image-tool will be moved out of image-spec there
+	// would probably be another place for this const and versioning may differ
+	// between the two.
+	Version = "0.4.0"
+)
+
 func main() {
 	cmd := &cobra.Command{
 		Use:   "oci-image-tool",

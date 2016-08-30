@@ -22,6 +22,7 @@ import (
 
 	"github.com/opencontainers/image-spec/image"
 	"github.com/opencontainers/image-spec/schema"
+	"github.com/opencontainers/image-spec/specs-go"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -79,12 +80,15 @@ func (v *validateCmd) Run(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	v.stdout.Printf("Testing against OCI image specification v%s ...", specs.Version)
+	v.stdout.Printf("Testing using oci-image-tool v%s ...", Version)
+
 	var exitcode int
 	for _, arg := range args {
 		err := v.validatePath(arg)
 
 		if err == nil {
-			v.stdout.Printf("%s: OK", arg)
+			v.stdout.Printf("Result: OK")
 			continue
 		}
 
@@ -116,10 +120,13 @@ func (v *validateCmd) validatePath(name string) error {
 	typ := v.typ
 
 	if typ == "" {
+		v.stdout.Printf("No type provided, trying to autodetect ...")
 		if typ, err = autodetect(name); err != nil {
 			return errors.Wrap(err, "unable to determine type")
 		}
 	}
+
+	v.stdout.Printf("Testing %s at %s ...", typ, name)
 
 	switch typ {
 	case typeImageLayout:
@@ -137,10 +144,8 @@ func (v *validateCmd) validatePath(name string) error {
 	switch typ {
 	case typeManifest:
 		return schema.MediaTypeManifest.Validate(f)
-
 	case typeManifestList:
 		return schema.MediaTypeManifestList.Validate(f)
-
 	case typeConfig:
 		return schema.MediaTypeImageSerializationConfig.Validate(f)
 	}
