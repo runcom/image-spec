@@ -21,4 +21,4 @@ tagged releases.
 
 ## Usage
 
-See the tool's own `--help` output.
+See the tool's own `--help` output or man pages.
